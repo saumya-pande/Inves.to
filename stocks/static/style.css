@@ -1,0 +1,45 @@
+body
+{
+background-color : powderblue;
+}
+
+h1
+{
+font-family: "Comic Sans MS";
+}
+
+.nav
+{
+    display : flex;
+    flex-direction : column;
+    justify-content : center
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav ul li a, nav ul li {
+    display: block;
+    padding: 12px 24px;
+    text-decoration: none;
+    color: #333;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+}
+
+nav ul li:hover, nav ul li a:hover {
+    background: #b3d1ff;
+    color: #222;
+    cursor: pointer;
+}
