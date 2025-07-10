@@ -1,0 +1,19 @@
+
+<!-- Stock Card Component -->
+<div class="col-md-4 mb-3">
+  <div class="stock-card">
+    <h4>{{ stock.name }}</h4>
+    <p>Close Price: <span id="{{ stock.symbol }}">₹{{ stock.curr_price }}</span></p>
+    
+    <div class="d-flex mt-3">
+      <button class="btn btn-success w-50 me-2" 
+              onclick="openBuyModal({{ stock.id }}, '{{ stock.name }}', {{ stock.curr_price }}, '{{ stock.symbol }}')">
+        Buy
+      </button>
+      <button class="btn btn-danger w-50" 
+              onclick="openSellModal({{ stock.id }}, '{{ stock.name }}', {{ stock.curr_price }}, '{{ stock.symbol }}')">
+        Sell
+      </button>
+    </div>
+  </div>
+</div>

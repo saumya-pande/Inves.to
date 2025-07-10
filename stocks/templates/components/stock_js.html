@@ -1,0 +1,133 @@
+<script>
+// WebSocket connection for real-time prices
+const ws = new WebSocket('wss://ws.finnhub.io?token=d1jm4i9r01qvg5gvdbg0d1jm4i9r01qvg5gvdbgg');
+
+const nasdaq_tickers = [
+    "AAPL", "MSFT", "GOOGL", "GOOG", "AMZN", "META", "NVDA", "TSLA", "PEP", "INTC", "CSCO",
+    "ADBE", "CMCSA", "AVGO", "COST", "TMUS", "TXN", "AMGN", "QCOM", "INTU", "PYPL", "BKNG"
+];
+
+// Store current prices and user holdings
+let currentPrices = {};
+const userHoldings = {{ user_holdings|safe }}; // Pass from Django context
+
+ws.addEventListener('open', () => {
+    console.log('Connected to WebSocket');
+    for (let ticker of nasdaq_tickers) {
+        ws.send(JSON.stringify({ type: 'subscribe', symbol: ticker }));
+    }
+    ws.send(JSON.stringify({ type: 'subscribe', symbol: 'BINANCE:BTCUSDT' }));
+});
+
+ws.addEventListener('message', (event) => {
+    try {
+        const dataJson = JSON.parse(event.data);
+        if (dataJson.data && dataJson.data.length > 0) {
+            const trade = dataJson.data[0];
+            const price = trade.p;
+            const ticker = trade.s;
+
+            currentPrices[ticker] = price;
+
+            // Update price display
+            const priceElem = document.getElementById(ticker);
+            if (priceElem) {
+                priceElem.innerHTML = `₹${price}`;
+            }
+        }
+    } catch (e) {
+        console.error('Error parsing WebSocket message:', e);
+    }
+});
+
+ws.addEventListener('error', (err) => {
+    console.error('WebSocket error:', err);
+});
+
+ws.addEventListener('close', () => {
+    console.log('WebSocket connection closed');
+});
+
+// Modal functions
+function openBuyModal(stockId, stockName, stockPrice, stockSymbol) {
+    // Use real-time price if available, otherwise use current price
+    const realTimePrice = currentPrices[stockSymbol] || stockPrice;
+
+    document.getElementById('buyStockName').value = stockName;
+    document.getElementById('buyStockPrice').value = '₹' + realTimePrice;
+    document.getElementById('buyQuantity').value = 1;
+    document.getElementById('buyTotalCost').value = '₹' + realTimePrice;
+
+    // Set form action
+    document.getElementById('buyForm').action = `/buy/${stockId}/`;
+
+    // Add hidden field for stock ID
+    let hiddenId = document.getElementById('buyForm').querySelector('input[name="stock_id"]');
+    if (!hiddenId) {
+        hiddenId = document.createElement('input');
+        hiddenId.type = 'hidden';
+        hiddenId.name = 'stock_id';
+        document.getElementById('buyForm').appendChild(hiddenId);
+    }
+    hiddenId.value = stockId;
+
+    new bootstrap.Modal(document.getElementById('buyModal')).show();
+}
+
+function openSellModal(stockId, stockName, stockPrice, stockSymbol) {
+    // Check user holdings
+    const holdings = userHoldings[stockId] || 0;
+
+    if (holdings <= 0) {
+        alert('You don\'t have any shares of this stock to sell.');
+        return;
+    }
+
+    // Use real-time price if available
+    const realTimePrice = currentPrices[stockSymbol] || stockPrice;
+
+    document.getElementById('sellStockName').value = stockName;
+    document.getElementById('sellStockPrice').value = '₹' + realTimePrice;
+    document.getElementById('sellHoldings').value = holdings + ' shares';
+    document.getElementById('sellQuantity').value = 1;
+    document.getElementById('sellQuantity').max = holdings;
+    document.getElementById('sellTotalValue').value = '₹' + realTimePrice;
+
+    // Set form action
+    document.getElementById('sellForm').action = `/sell/${stockId}/`;
+
+    // Add hidden field for stock ID
+    let hiddenId = document.getElementById('sellForm').querySelector('input[name="stock_id"]');
+    if (!hiddenId) {
+        hiddenId = document.createElement('input');
+        hiddenId.type = 'hidden';
+        hiddenId.name = 'stock_id';
+        document.getElementById('sellForm').appendChild(hiddenId);
+    }
+    hiddenId.value = stockId;
+
+    new bootstrap.Modal(document.getElementById('sellModal')).show();
+}
+
+// Calculate totals when quantity changes
+document.addEventListener('DOMContentLoaded', function() {
+    const buyQuantity = document.getElementById('buyQuantity');
+    const sellQuantity = document.getElementById('sellQuantity');
+
+    if (buyQuantity) {
+        buyQuantity.addEventListener('input', function() {
+            const price = parseFloat(document.getElementById('buyStockPrice').value.replace('₹', ''));
+            const quantity = parseInt(this.value) || 0;
+            document.getElementById('buyTotalCost').value = '₹' + (price * quantity).toFixed(2);
+        });
+    }
+
+    if (sellQuantity) {
+        sellQuantity.addEventListener('input', function() {
+            const price = parseFloat(document.getElementById('sellStockPrice').value.replace('₹', ''));
+            const quantity = parseInt(this.value) || 0;
+            document.getElementById('sellTotalValue').value = '₹' + (price * quantity).toFixed(2);
+        });
+    }
+});
+</script>

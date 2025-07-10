@@ -1,0 +1,54 @@
+{% load static %}
+<link href="{% static 'dashboard.css' %}" rel="stylesheet">
+    
+<h1 class="text-light text-center pt-3" style="opacity:50;">Dashboard</h1>
+
+<div class="container">
+        <table class="table table-bordered table-striped bg-light opacity-80 table-responsive text-center border-none">
+        <thead>
+            <tr>
+                <th>Stock Name</th>
+                <th>Ticker</th>
+                <th>Purchase Price</th>
+                <th>Current Price</th>
+                <th>Quantity</th>
+                <th>Total View</th>
+            </tr>
+        </thead>
+        {% if data %}
+            <tbody>
+            {% for item in data %}
+            <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.stock.name }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.stock.ticker }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.purchase_price|floatformat:2 }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.purchase_quantity }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.stock.curr_price|floatformat:2 }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.total_value|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+
+            <!-- summary rows -->
+            <tr style="background-color: #f9f9f9; font-weight: bold;">
+                <td colspan="5" style="text-align: right; padding: 12px;">Total Invested:</td>
+                <td style="padding: 12px;">$ {{ invested|floatformat:2 }}</td>
+            </tr>
+            <tr style="background-color: #f9f9f9; font-weight: bold;">
+                <td colspan="5" style="text-align: right; padding: 12px;">Current Value:</td>
+                <td style="padding: 12px;">$ {{ total_value|floatformat:2 }}</td>
+            </tr>
+            <tr style="background-color: #f9f9f9; font-weight: bold;">
+                <td colspan="5" style="text-align: right; padding: 12px;">Gains:</td>
+                <td style="padding: 12px;">{{ gains }}%</td>
+            </tr>
+            </tbody> 
+
+        {% else %}
+         <tbody>
+            <tr>
+                <td colspan="6" class="text-center fs-4 text-muted py-4">No stocks bought !!</td>
+            </tr>
+         </tbody>
+        {% endif %}
+    </table>
+</div>
