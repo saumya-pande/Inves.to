@@ -77,12 +77,12 @@ ASGI_APPLICATION = 'marketplace.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -150,7 +150,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 DATABASES = {
    'default': dj_database_url.parse(
-       'postgresql://postgres:3141@Supabase@db.tkyktsnpfmjzccswewsz.supabase.co:5432/postgres',
+'postgresql://postgres.tkyktsnpfmjzccswewsz:3141@Supabase@aws-0-ap-south-1.pooler.supabase.com:5432/postgres'
    )
 }
 
