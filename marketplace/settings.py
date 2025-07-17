@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-4tm_^%uk5y8nnhl$iydo#q3r^*bg+25c1(p3p#yo-($wqyh4yh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'marketplace.urls'
@@ -69,13 +71,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'marketplace.wsgi.application'
 
+ASGI_APPLICATION = 'marketplace.asgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
@@ -142,3 +146,14 @@ EMAIL_HOST_USER = "saumyapande05@gmail.com"
 #App password
 EMAIL_HOST_PASSWORD = "muhi bmfm wwwg gbaa"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+DATABASES = {
+   'default': dj_database_url.parse(
+       'postgresql://postgres:3141@Supabase@db.tkyktsnpfmjzccswewsz.supabase.co:5432/postgres',
+   )
+}
+
+
+
+

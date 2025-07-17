@@ -106,7 +106,7 @@ def market_view(request):
         stock_list = Stocks.objects.all()
 
     paginator = Paginator(stock_list, 9)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get('p')
     page_obj = paginator.get_page(page_number)
     
     # Get user holdings for sell validation
@@ -163,7 +163,7 @@ def register_view(request):
             messages.error(request, "Username already exists. Try again")
             return render(request, 'register.html')
 
-        user = User(username=username, email=email, first_name=first_name, last_name=last_name,)
+        user = User(username=username, email=email, first_name=first_name, last_name=last_name)
         user.set_password(password)
         user.save()
         print(user_image)
@@ -203,7 +203,6 @@ def buy(request, id):
     purchase_price = float(request.POST.get('real-time-price') or stock.curr_price)
     print(f"Buying {purchase_quantity} shares of {stock.name} at ₹{purchase_price}")
 
-    # UserStock is an example of Composite Keys in DBMS (user, stock) --> candidate key
     userStocks = UserStock.objects.filter(stock=stock, user=user_info).first()
     if userStocks:
         userStocks.purchase_price = (userStocks.purchase_quantity*userStocks.purchase_price + purchase_price*purchase_quantity) / (purchase_quantity + userStocks.purchase_quantity)
@@ -262,3 +261,7 @@ def sell(request, id):
     t1.start()
 
     return redirect('index')
+
+
+# select  * from  student where marks > 60
+

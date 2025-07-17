@@ -28,7 +28,11 @@
         <a class="btn btn-outline-light btn-hover" href="{% url 'login' %}">Login / Register</a>
       {% endif %}
     </div>
-
+{% if user.is_authenticated %}
+  <li class="nav-item me-3"><a class="nav-link {% if request.path == '/login/' %}active{% endif %}" href="/login">Login</a></li>
+  {% else %}
+  <li class="nav-item me-3"><a class="nav-link {% if request.path == '/login/' %}active{% endif %}" href="/logout">Logout</a></li>
+  {% endif %}
   
   </div>
 </nav>

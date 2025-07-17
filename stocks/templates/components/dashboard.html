@@ -10,14 +10,16 @@
                 <th>Stock Name</th>
                 <th>Ticker</th>
                 <th>Purchase Price</th>
-                <th>Current Price</th>
                 <th>Quantity</th>
+                <th>Current Price</th>
                 <th>Total View</th>
             </tr>
         </thead>
         {% if data %}
             <tbody>
             {% for item in data %}
+            {% if item.purchase_quantity != 0 %}
+
             <tr>
                 <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.stock.name }}</td>
                 <td style="padding: 12px; border-bottom: 1px solid #eee;">{{ item.stock.ticker }}</td>
@@ -26,6 +28,7 @@
                 <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.stock.curr_price|floatformat:2 }}</td>
                 <td style="padding: 12px; border-bottom: 1px solid #eee;">$ {{ item.total_value|floatformat:2 }}</td>
             </tr>
+            {% endif %}
             {% endfor %}
 
             <!-- summary rows -->
